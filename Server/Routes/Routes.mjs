@@ -3,10 +3,11 @@ import SignUpRouter from "../Controllers/SignUp.mjs";
 import Router from "express";
 import HomeRouter from "../Controllers/Home.mjs";
 import logOutRouter from "../Controllers/LogOut.mjs";
+import LogInRouter from "../Controllers/LogIn.mjs";
 const Routes = Router();
 Routes.use(express.json());
 Routes.use(SignUpRouter);
 Routes.use(HomeRouter);
 Routes.use(logOutRouter);
-
+Routes.use(LogInRouter);
 export default Routes;

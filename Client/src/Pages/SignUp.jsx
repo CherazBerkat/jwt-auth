@@ -70,29 +70,6 @@ export default function SignUp() {
     onSuccess: gglSuccess,
     onError: gglError,
   });
-  useEffect(() => {
-    const hash = new URLSearchParams(window.location.hash.substring(1));
-    const accessToken = hash.get("access_token");
-
-    if (accessToken) {
-      axios
-        .post("http://localhost:3000/gitSignUp", { accessToken })
-        .then((res) => {
-          if (res.data.message == "User registered successfully") {
-            setSuccess(true);
-            localStorage.setItem("userId", res.data.userId);
-            navigate("/home");
-          } else {
-            setExist(true);
-            if (res.data) setMessage(res.data);
-            else setMessage("internal Server Error");
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  }, []);
 
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
@@ -134,7 +111,7 @@ export default function SignUp() {
       return false;
     } else return true;
   };
-  var handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setSubmited(true);
     if (validation()) {
@@ -149,7 +126,6 @@ export default function SignUp() {
             navigate("/home");
           } else {
             setExist(true);
-            console.log(res.data);
             if (res.data) setMessage(res.data);
             else setMessage("internal Server Error");
           }
@@ -163,7 +139,7 @@ export default function SignUp() {
   return (
     <div className="flex justify-center items-center h-screen">
       <div className="flex flex-col items-center w-[500px] gap-10 font-sans">
-        <h1 className="text-3xl font-bold">SignUp</h1>
+        <h1 className="text-3xl font-bold">Sign Up</h1>
 
         <form className="flex flex-col w-full gap-2 ">
           <div className="flex flex-col gap-0">
@@ -277,13 +253,13 @@ export default function SignUp() {
               className="p-2 my-2 bg-[#28f7b6] font-bold text-lg shadow-md rounded text-white hover:scale-[1.02] hover:duration-300  active:scale-95 active:duration-300"
               onClick={handleSubmit}
             >
-              SignUp
+              Sign Up
             </button>
             <p className="pl-2 text-[#808080]">
               Have an account?{" "}
               <span
                 className="cursor-pointer hover:underline hover:text-blue-700"
-                onClick={() => navigate("/LogIn")}
+                onClick={() => navigate("/logIn")}
               >
                 Log In
               </span>

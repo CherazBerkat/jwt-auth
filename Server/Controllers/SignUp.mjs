@@ -70,7 +70,6 @@ SignUpRouter.post(
       const token = jwt.sign(
         payload,
         process.env.JWT_SECRET || "secret",
-        "secret",
         { expiresIn: 3600 } // 1 hour
       );
 
