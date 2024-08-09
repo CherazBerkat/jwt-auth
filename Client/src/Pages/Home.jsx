@@ -1,7 +1,20 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 import { useEffect } from "react";
 
 export default function Home() {
+  useEffect(() => {
+    // Get userId from the cookie
+    const userId = Cookies.get("userId");
+
+    if (userId) {
+      // Store the userId in local storage or use it directly
+      localStorage.setItem("userId", userId);
+
+      // Optionally, remove the cookie if no longer needed
+      Cookies.remove("userId");
+    }
+  }, []);
   useEffect(() => {
     axios
       .get("http://localhost:3000/home", {
@@ -24,7 +37,7 @@ export default function Home() {
       .then((res) => {
         console.log(res.data);
       });
-    window.location.href = "/LogIn";
+    window.location.href = "/logIn";
   };
   return (
     <div className="flex flex-col justify-center items-center mt-36">

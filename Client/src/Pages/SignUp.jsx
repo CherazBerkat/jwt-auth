@@ -44,7 +44,7 @@ export default function SignUp() {
   const navigate = useNavigate();
   const gglSuccess = (res) => {
     axios
-      .post("http://localhost:3000/gglSignUp", res, {
+      .post("http://localhost:3000/signUp/google", res, {
         withCredentials: true,
       })
       .then((res) => {
@@ -64,6 +64,10 @@ export default function SignUp() {
   };
   const gglError = (err) => {
     console.log(err);
+  };
+
+  const gitSignUp = () => {
+    window.location.href = "http://localhost:3000/signUp/gitHub";
   };
 
   const gglSignUp = useGoogleLogin({
@@ -149,7 +153,10 @@ export default function SignUp() {
               className="p-2 my-2 border-b-2 border-gray-300 outline-none"
               value={data.username}
               onChange={handleChange}
-              onFocus={() => setSubmited(false)}
+              onFocus={() => {
+                setSubmited(false);
+                setExist(false);
+              }}
               name="username"
             />
             {submited && !data.username && !dataVoid() && (
@@ -171,7 +178,10 @@ export default function SignUp() {
                 className="p-2 pl-8 my-2 border-b-2 border-gray-300 outline-none w-full"
                 value={data.email}
                 onChange={handleChange}
-                onFocus={() => setSubmited(false)}
+                onFocus={() => {
+                  setSubmited(false);
+                  setExist(false);
+                }}
                 name="email"
               />
             </div>
@@ -191,7 +201,10 @@ export default function SignUp() {
                 className="p-2 pl-8 w-full my-2 border-b-2 border-gray-300 outline-none"
                 value={data.password}
                 onChange={handleChange}
-                onFocus={() => setSubmited(false)}
+                onFocus={() => {
+                  setSubmited(false);
+                  setExist(false);
+                }}
                 name="password"
                 autoComplete="password"
               />
@@ -243,9 +256,7 @@ export default function SignUp() {
             {submited && validation() && success && (
               <p className="text-green-600">Account created successfully</p>
             )}
-            {submited && validation() && exist && (
-              <p className="text-red-600"> {message} </p>
-            )}
+            {exist && <p className="text-red-600"> {message} </p>}
           </div>
           <div className="flex flex-col gap-0 ">
             <button
@@ -306,7 +317,7 @@ export default function SignUp() {
               onMouseLeave={() => setGitS(false)}
             >
               {gitS ? (
-                <button className="w-[25px] h-[25px]">
+                <button className="w-[25px] h-[25px]" onClick={gitSignUp}>
                   <img src={git} alt="git icon" />{" "}
                 </button>
               ) : (

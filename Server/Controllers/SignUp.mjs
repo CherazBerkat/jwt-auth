@@ -8,6 +8,7 @@ import cors from "cors";
 import { hashPassword } from "../utils/HashPW.mjs";
 import { check, validationResult } from "express-validator";
 import jwtAuth from "../middlewares/jwtAuth.mjs";
+import passport from "../utils/Passport.mjs";
 import axios from "axios";
 
 const SignUpRouter = Router();
@@ -95,7 +96,7 @@ SignUpRouter.get("/signUp", jwtAuth, (req, res) => {
   res.send("Signed Up");
 });
 
-SignUpRouter.post("/gglSignUp", async (req, res) => {
+SignUpRouter.post("/signUp/google", async (req, res) => {
   const { access_token } = req.body;
 
   try {
@@ -150,6 +151,52 @@ SignUpRouter.post("/gglSignUp", async (req, res) => {
     console.error(err.message);
     res.status(500).send("Server Error");
   }
+});
+
+SignUpRouter.get(
+  "/signUp/gitHub",
+  passport.authenticate("github", { scope: ["user:email"] })
+);
+
+// GitHub callback route
+SignUpRouter.get(
+  "/signUp/github/callback",
+  passport.authenticate("github", { failureRedirect: "/signUp/failure" }),
+  (req, res) => {
+    // Create JWT payload
+    const jwtPayload = {
+      user: {
+        id: req.user.id,
+      },
+    };
+
+    // Sign JWT token
+    const token = jwt.sign(
+      jwtPayload,
+      process.env.JWT_SECRET || "secret",
+      { expiresIn: 3600 } // 1 hour
+    );
+
+    res.cookie("token", token, {
+      maxAge: 3600000, // 1 hour in milliseconds
+      path: "/",
+      secure: false,
+      sameSite: "Lax",
+    });
+
+    res.cookie("userId", req.user.id, {
+      maxAge: 3600000, // 1 hour in milliseconds
+      path: "/",
+      secure: false,
+      sameSite: "Lax",
+    });
+
+    return res.redirect("http://localhost:5173/home");
+  }
+);
+
+SignUpRouter.get("/signUp/failure", (req, res) => {
+  res.json({ message: "Sign up failed" });
 });
 
 export default SignUpRouter;

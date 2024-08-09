@@ -5,7 +5,7 @@ dotenv.config();
 
 const connectDB = async () => {
   try {
-    await mongoose.connect("mongodb://localhost/Auth");
+    await mongoose.connect(process.env.MONGO_URI || "mongodb://localhost/Auth");
     console.log("MongoDB connected");
   } catch (err) {
     console.error(err.message);

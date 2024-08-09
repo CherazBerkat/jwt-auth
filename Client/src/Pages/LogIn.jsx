@@ -39,6 +39,37 @@ export default function LogIn() {
   const [message, setMessage] = useState("");
   const mailRegx = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const navigate = useNavigate();
+
+  const gglSuccess = (res) => {
+    axios
+      .post("http://localhost:3000/logIn/google", res, {
+        withCredentials: true,
+      })
+      .then((res) => {
+        if (res.data.message == "User Logged In") {
+          setSuccess(true);
+          localStorage.setItem("userId", res.data.userId);
+          navigate("/home");
+        } else {
+          setExist(true);
+          if (res.data.message) setMessage(res.data.message);
+          else setMessage("internal Server Error");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const gglError = (err) => {
+    console.log(err);
+  };
+  const gglLogIn = useGoogleLogin({
+    onSuccess: gglSuccess,
+    onError: gglError,
+  });
+  const gitLogIN = () => {
+    window.location.href = "http://localhost:3000/logIN/gitHub";
+  };
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
@@ -99,7 +130,10 @@ export default function LogIn() {
                 className="p-2 pl-8 my-2 border-b-2 border-gray-300 outline-none w-full"
                 value={data.email}
                 onChange={handleChange}
-                onFocus={() => setSubmited(false)}
+                onFocus={() => {
+                  setSubmited(false);
+                  setExist(false);
+                }}
                 name="email"
               />
             </div>
@@ -119,7 +153,10 @@ export default function LogIn() {
                 className="p-2 pl-8 w-full my-2 border-b-2 border-gray-300 outline-none"
                 value={data.password}
                 onChange={handleChange}
-                onFocus={() => setSubmited(false)}
+                onFocus={() => {
+                  setSubmited(false);
+                  setExist(false);
+                }}
                 name="password"
                 autoComplete="password"
               />
@@ -144,9 +181,7 @@ export default function LogIn() {
             {submited && validation() && success && (
               <p className="text-green-600">Account created successfully</p>
             )}
-            {submited && validation() && exist && (
-              <p className="text-red-600"> {message} </p>
-            )}
+            {exist && <p className="text-red-600"> {message} </p>}
           </div>
           <div className="flex flex-col gap-0 ">
             <button
@@ -162,7 +197,7 @@ export default function LogIn() {
                 className="cursor-pointer hover:underline hover:text-blue-700"
                 onClick={() => navigate("/")}
               >
-                Log In
+                Sign Up
               </span>
             </p>
           </div>
@@ -179,7 +214,7 @@ export default function LogIn() {
               onMouseLeave={() => setGmailS(false)}
             >
               {gmailS ? (
-                <button className="w-[25px] h-[25px]">
+                <button className="w-[25px] h-[25px]" onClick={gglLogIn}>
                   <img src={gmail} alt="gmail icon" />
                 </button>
               ) : (
@@ -207,7 +242,7 @@ export default function LogIn() {
               onMouseLeave={() => setGitS(false)}
             >
               {gitS ? (
-                <button className="w-[25px] h-[25px]">
+                <button className="w-[25px] h-[25px]" onClick={gitLogIN}>
                   <img src={git} alt="git icon" />{" "}
                 </button>
               ) : (

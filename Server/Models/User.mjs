@@ -3,32 +3,27 @@ import mongoose from "mongoose";
 const UserSchema = new mongoose.Schema({
   username: {
     type: String,
-    required: true,
+    unique: false,
   },
   email: {
     type: String,
-    required: true,
-    default: null,
-    unique: true,
+    unique: false,
   },
   password: {
     type: String,
-    default: null,
+    unique: false,
   },
   facebook: {
     type: String,
-    default: null,
-    unique: true,
+    unique: false,
   },
   instagram: {
     type: String,
-    default: null,
-    unique: true,
+    unique: false,
   },
   github: {
     type: String,
-    default: null,
-    unique: true,
+    unique: false,
   },
 });
 
